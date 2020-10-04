@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
@@ -20,45 +21,43 @@ import javafx.stage.Stage;
 
 public class javaFXproject extends Application{
 
-	GridPane gridBoard;
-	VBox vbox;
-	HBox hbox;
-	PseudoClass right;
-	PseudoClass bottom;
+	private GridPane gridBoard;
+	private Board board;
+	private VBox vbox;
+	private HBox hbox;
+	private static ObservableList<Node> hlist = null;
+	private ObservableList<Node> vlist = null;
+	private Scene scene;
+	private PseudoClass right, bottom;
+	private Button btn_solve, btn_restart;
+	private Text resaults;
+	private TextField[][] textFieldArr;
 
-	Button btn_solve;
-	Button btn_restart;
-	Text resaults = new Text();
 
-	TextField[][] textFieldArr;
-
-	private Board gridToBoard(GridPane grid, TextField[][] textFieldArr) {
-		System.out.println("gridToBoard");
-		Board board = new Board();
+	/////////////////////////////////////i make the board easy.
+	private void gridToBoard() {
+		board = new Board();
 		int value;
 		for (int i = 0; i < 9; i++) {
 			for (int j=0; j<9;j++) {
 				if (textFieldArr[i][j].getText() != null && !textFieldArr[i][j].getText().trim().isEmpty()) {
 					value = Integer.parseInt(textFieldArr[i][j].getText());
-					board.setBaord(i, j, value);
-					System.out.println("("+i+","+ j+") ="+value);
+					board.setBaord(j, i, value);
 				}
 				else {
-					System.out.println("("+i+","+ j+") =0");
-					board.setBaord(i, j, 0);
+					board.setBaord(j, i, 0);
 				}
 			}
 		}
-		board=board.mediumLevle();
-		return board;
+		/////////////////////////////////////
+		board = board.mediumLevle();
 	}
 
-	private GridPane boardTogrid(Board board) {
-		System.out.println("boardTogrid");
-		PseudoClass right = PseudoClass.getPseudoClass("right");
-		PseudoClass bottom = PseudoClass.getPseudoClass("bottom");
-		GridPane gridpane = new GridPane();
-		int value;
+	private void boardTogrid() {
+		gridBoard = new GridPane();
+		right = PseudoClass.getPseudoClass("right");
+		bottom = PseudoClass.getPseudoClass("bottom");
+		int value=0;
 		for (int i = 0; i < 9; i++) {
 			for (int j=0; j<9;j++) {
 				value = board.getBaord(i, j);
@@ -68,12 +67,11 @@ public class javaFXproject extends Application{
 				cell.setMaxSize(50, 50);
 				cell.setMinSize(50, 50);
 				cell.getStyleClass().add("cell");
-			
-				cell.getChildren().add(createTextInBox(value));
-				gridpane.add(cell, i, j);
+
+				cell.getChildren().add(new TextArea(value + ""));
+				gridBoard.add(cell,i,j,1,1);
 			}
 		}
-		return gridpane;
 	}
 
 	private Node createTextField() {
@@ -89,16 +87,8 @@ public class javaFXproject extends Application{
 		return textField ;
 	}
 
-	private Node createTextInBox(int number) {
-		System.out.println("createTextInBox");
-		Integer num = number;
-		Text text = new Text(num.toString());
-		return (new VBox(text)) ;	
-	}
-
-	//need to be fixed
-	private GridPane restartGread(GridPane gridBoard, TextField[][] textFieldArr) {
-		System.out.println("restartGread");
+	private void restartGread() {
+		gridBoard = new GridPane();
 		right = PseudoClass.getPseudoClass("right");
 		bottom = PseudoClass.getPseudoClass("bottom");
 
@@ -112,14 +102,10 @@ public class javaFXproject extends Application{
 				cell.getStyleClass().add("cell");
 				textFieldArr[i][j] = (TextField)createTextField();
 				cell.getChildren().add(textFieldArr[i][j]);
-				gridBoard.add(cell, i, j);
+				gridBoard.add(cell, i, j,1,1);
 			}
 		}
-		return gridBoard;
 	}
-
-
-
 
 
 	public void start (Stage stage) {
@@ -136,17 +122,14 @@ public class javaFXproject extends Application{
 		btn_solve = new Button("Solve !!!");
 		btn_restart = new Button("Restart");
 
-		gridBoard =restartGread(gridBoard,textFieldArr);
+		restartGread();
 
 		btn_solve.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
-
-				Board board = new Board();
-				board=gridToBoard(gridBoard, textFieldArr);
-				//				board = board.mediumLevle();
+				gridToBoard();
 
 				int iteration=0;	//limit main loop iterations
-				while(!board.solved() && iteration<5000) {
+				while(!board.solved() && iteration<1000) {
 					while (board.findIfMissingOneDigitInRowCol()>0)
 						board.fillMisingDigit(board.findIfMissingOneDigitInRowCol());
 					while (board.findIfMissingOneDigitInsquare()>0)
@@ -160,11 +143,13 @@ public class javaFXproject extends Application{
 				if (board.solved()) {
 					resaults.setText("board has solved");
 					board.printBoard("solved");
-					gridBoard =boardTogrid(board);
+					boardTogrid();
+
 				}
 				else {
 					board.printBoard("unsolved");
-					if (iteration>=10000)
+					restartGread();
+					if (iteration>=1000)
 						resaults.setText("to much wotk...");		
 					else
 						resaults.setText("board canot be solved");			
@@ -174,22 +159,24 @@ public class javaFXproject extends Application{
 		});
 		btn_restart.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
-				gridBoard = restartGread(gridBoard,textFieldArr);}
+				restartGread();}
 		});
 
-		ObservableList<Node> hlist = hbox.getChildren();
+		
+		hlist = hbox.getChildren();
 		hbox.setSpacing(10);
 		hbox.setAlignment(Pos.BASELINE_CENTER);
-		ObservableList<Node> vlist = vbox.getChildren();
+		vlist = vbox.getChildren();
 
 		hlist.addAll(resaults,btn_solve,btn_restart);
 		vlist.add(gridBoard);
 		vlist.add(hbox);
 
-		Scene scene = new Scene(vbox);		
+		scene = new Scene(vbox);		
 		scene.getStylesheets().add("sudoku.css");
 		stage.setScene(scene);
 		stage.show();
+
 
 	}
 
@@ -197,12 +184,4 @@ public class javaFXproject extends Application{
 		launch(args);
 	}
 
-
 }
-
-
-//not show the number after solving(or not), probably need to update gridpane to update board (fixed board)
-
-//fix position problem. the numbers enter wrong position (arr[0,1] -> arr[1,0]). need to find out why it happened.
-
-

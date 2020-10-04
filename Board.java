@@ -47,7 +47,6 @@ public class Board {
 
 	//print board
 	public void printBoard() {
-		System.out.println("printBoard");
 		for (int i = 0; i < this.board.length; i++) {
 			for (int j = 0; j < this.board[i].length; j++) {
 				System.out.print("["+this.board[i][j]+"]");
@@ -59,7 +58,6 @@ public class Board {
 
 	//print board
 	public void printBoard(String str) {
-		System.out.println("printBoard2");
 		System.out.println(str);
 		for (int i = 0; i < this.board.length; i++) {
 			for (int j = 0; j < this.board[i].length; j++) {
@@ -72,13 +70,11 @@ public class Board {
 
 	//set 1 digit in table
 	public void setBaord(int i,int j,int k) {
-		System.out.println("setBaord");
 		this.board[i][j]=k;
 	}
 
 	//get 1 digit in table
 	public int getBaord(int i,int j) {
-		System.out.println("getBaord");
 		return this.board[i][j];
 	}
 
