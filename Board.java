@@ -2,7 +2,7 @@ package javaFXproject;
 
 public class Board {
 
-	int[][] board;
+	private int[][] board;
 
 	public Board() {
 		this.board = new int[9][9];
@@ -44,7 +44,6 @@ public class Board {
 
 
 
-
 	//print board
 	public void printBoard() {
 		for (int i = 0; i < this.board.length; i++) {
@@ -78,12 +77,12 @@ public class Board {
 		return this.board[i][j];
 	}
 
-	//check if sudoku solved properly
-	public boolean solved() {
+	//check if Sudoku solved properly
+	public boolean solved(Board board) {
 		if(BoardHasAllNumbers()) {
 			for (int i = 0; i < this.board.length; i++) {
 				for (int j = 0; j < this.board[i].length; j++) {
-					if(!unickNumberInRowCol(i,j) || !BoardHasAllNumbers()) {
+					if(!unickNumberInRowCol(board,i,j) || !BoardHasAllNumbers()) {
 						return false;
 					}
 				}
@@ -175,28 +174,30 @@ public class Board {
 	}
 
 	//check if there is 2 identical numbers in the same row or col
-	private boolean unickNumberInRowCol(int i, int j) {
-		int number = this.board[i][j];
+	private boolean unickNumberInRowCol(Board board,int i, int j) {
+		int number = board.getBaord(i, j);
+		if (number == 0)
+			return true;
 		for (int m=0; m <i; m++) {
-			if (this.board[m][j]==number)
+			if (board.getBaord(m, j)==number)
 				return false;
 		}
 		for (int m=i+1; m <this.board.length; m++) {
-			if (this.board[m][j]==number)
+			if (board.getBaord(m, j)==number)
 				return false;
 		}
 		for (int l=0; l <j; l++) {
-			if (this.board[i][l]==number)
+			if (board.getBaord(i, l)==number)
 				return false;
 		}
 		for (int l=j+1; l <this.board.length; l++) {
-			if (this.board[i][l]==number)
+			if (board.getBaord(i, l)==number)
 				return false;
 		}
 		return true;
 	}
 
-	//return 2 digit, first digit 1:row;2:col, second digit  number of row/col, and 0 if cant find anything
+	//return 2 digit, first digit 1:row;2:column, second digit  number of row/col, and 0 if cant find anything
 	public int findIfMissingOneDigitInRowCol () {
 		int[] digitInRow = new int[9];
 		int[] digitInCol = new int[9];
@@ -251,15 +252,15 @@ public class Board {
 		return 0;
 	}
 
-	//fill the missing number in a row/col
+	//fill the missing number in a row/column
 	public void fillMisingDigit (int i) {
 		int[] arrayCounter = new int[9];
 		int numberMissing=0;
 		int row=0,col=0;
 		if (i/10==1) {
 			row=i%10;
-			for (int j = 0; j < this.board.length; j++) {
-				int number = this.board[j][col];
+			for (int j = 0; j < 9; j++) {
+				int number = this.getBaord(row, j);
 				if (number>0)
 					arrayCounter[number-1]++;
 			}
@@ -267,7 +268,7 @@ public class Board {
 				if (arrayCounter[j]==0)
 					numberMissing = j+1;
 			}
-			for (int j = 0; j < this.board[row].length; j++) {
+			for (int j = 0; j < 9; j++) {
 				if (this.board[row][j]==0) {
 					this.board[row][j]=numberMissing;
 					break;
@@ -276,7 +277,7 @@ public class Board {
 		}
 		else {
 			col=i%10;
-			for (int j = 0; j < this.board.length; j++) {
+			for (int j = 0; j < 9; j++) {
 				int number = this.board[j][col];
 				if (number>0)
 					arrayCounter[number-1]++;
@@ -417,6 +418,45 @@ public class Board {
 		}
 		if (count==8)
 			this.board[i][j]=number;
+	}
+
+	public boolean hasProblem(Board board) {
+		//find 2 identical numbers in rows/columns
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9;j++) {
+				if(!unickNumberInRowCol(board,i,j)) {
+					board.printBoard();
+					System.out.println("problem 1 accured, in pisition: "+i+", "+j);
+					return true;
+					}
+			}
+		}
+
+		//find 2 identical numbers in square
+		
+		for (int i = 1; i<9; i+=3) {
+			for(int j =1; j <9; j+=3) {
+				int[] numbers = {0,0,0,0,0,0,0,0,0,0};
+
+				numbers[board.getBaord(i-1, j-1)]++;
+				numbers[board.getBaord(i-1, j)]++;
+				numbers[board.getBaord(i-1, j+1)]++;
+				numbers[board.getBaord(i, j-1)]++;
+				numbers[board.getBaord(i, j)]++;
+				numbers[board.getBaord(i, j+1)]++;
+				numbers[board.getBaord(i+1, j-1)]++;
+				numbers[board.getBaord(i+1, j)]++;
+				numbers[board.getBaord(i+1, j+1)]++;
+
+				for (int k = 1; k < numbers.length; k++) {
+					if (numbers[k]>1) {
+						System.out.println("hsd problem 2");
+						return true;}
+				}
+			}
+		}	
+
+		return false;
 	}
 
 
