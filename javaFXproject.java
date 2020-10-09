@@ -162,17 +162,14 @@ public class javaFXproject extends Application{
 					boardSolved = board.solved(board);
 					while (board.findIfMissingOneDigitInRowCol(board)>0) {
 						board = board.fillMisingDigit(board, board.findIfMissingOneDigitInRowCol(board));
-						System.out.println("1");
 					}
 					while (board.findIfMissingOneDigitInsquare(board)>0) {
 						board = board.fillMisingDigitSquare(board, board.findIfMissingOneDigitInsquare(board));
-						System.out.println("2");
 					}
 					for (int i = 0; i < 9; i++)
 						for (int j = 0; j < 9; j++)
 							if (board.getBaord(i, j)==0) {
 								board = board.tryPutNewNumberInside(board,i,j);
-								System.out.println("3");
 							}
 					iteration++;
 
