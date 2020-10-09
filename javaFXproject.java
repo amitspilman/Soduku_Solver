@@ -155,36 +155,41 @@ public class javaFXproject extends Application{
 		btn_solve.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
 				board = gridToBoard(gridBoard, board);
-				board.printBoard("init board");
 				int iteration=0;	//limit main loop iterations
 				boolean boardSolved = false;
 
 				while(!boardSolved && iteration<1000) {
 					boardSolved = board.solved(board);
-					while (board.findIfMissingOneDigitInRowCol()>0)
-						board.fillMisingDigit(board.findIfMissingOneDigitInRowCol());
-					while (board.findIfMissingOneDigitInsquare()>0)
-						board.fillMisingDigitSquare(board.findIfMissingOneDigitInsquare());
+					while (board.findIfMissingOneDigitInRowCol(board)>0) {
+						board = board.fillMisingDigit(board, board.findIfMissingOneDigitInRowCol(board));
+						System.out.println("1");
+					}
+					while (board.findIfMissingOneDigitInsquare(board)>0) {
+						board = board.fillMisingDigitSquare(board, board.findIfMissingOneDigitInsquare(board));
+						System.out.println("2");
+					}
 					for (int i = 0; i < 9; i++)
 						for (int j = 0; j < 9; j++)
-							if (board.getBaord(i, j)==0)
-								board.tryPutNewNumberInside(i,j);
+							if (board.getBaord(i, j)==0) {
+								board = board.tryPutNewNumberInside(board,i,j);
+								System.out.println("3");
+							}
 					iteration++;
 
 				}
 
 				if (boardSolved) {
-					board.printBoard("board has solved");
+					board.printBoard(board, "board has solved");
 					resaults.setText("board has solved");
 					boardTogrid(gridBoard, board);
 				}
 				else {
 					updateGrid(gridBoard, board);
-					resaults.setText("sorry, can't solve it.");		
+					resaults.setText("can't solve it");		
 				}
 				if (board.hasProblem(board)) {
 					btn_solve.setDisable(true);
-					resaults.setText("wrong input, please try again..");		
+					resaults.setText("wrong input");		
 				}
 			}
 		});

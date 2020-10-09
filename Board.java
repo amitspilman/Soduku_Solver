@@ -12,8 +12,6 @@ public class Board {
 		this.board=arr;
 	}
 
-
-
 	public Board easyLevle() {
 		int[][] arr = {{5,0,8,0,0,0,9,0,1},{0,0,6,9,0,3,5,0,0},{0,4,0,1,0,0,2,0,0},
 				{0,3,2,8,7,0,1,5,0},{0,0,0,0,4,0,0,2,0},{0,8,9,0,5,0,0,0,0},
@@ -43,12 +41,11 @@ public class Board {
 	}
 
 
-
 	//print board
-	public void printBoard() {
-		for (int i = 0; i < this.board.length; i++) {
-			for (int j = 0; j < this.board[i].length; j++) {
-				System.out.print("["+this.board[i][j]+"]");
+	public void printBoard(Board board) {
+		for (int i = 0; i < board.length(); i++) {
+			for (int j = 0; j < board.length(); j++) {
+				System.out.print("["+board.getBaord(i, j)+"]");
 			}
 			System.out.println();
 		}
@@ -56,11 +53,11 @@ public class Board {
 	}
 
 	//print board
-	public void printBoard(String str) {
+	public void printBoard(Board board,String str) {
 		System.out.println(str);
-		for (int i = 0; i < this.board.length; i++) {
-			for (int j = 0; j < this.board[i].length; j++) {
-				System.out.print("["+this.board[i][j]+"]");
+		for (int i = 0; i < board.length(); i++) {
+			for (int j = 0; j < board.length(); j++) {
+				System.out.print("["+board.getBaord(i, j)+"]");
 			}
 			System.out.println();
 		}
@@ -77,12 +74,17 @@ public class Board {
 		return this.board[i][j];
 	}
 
+	public int length() {
+		return this.board.length;
+	}
+
+
 	//check if Sudoku solved properly
 	public boolean solved(Board board) {
-		if(BoardHasAllNumbers()) {
+		if(BoardHasAllNumbers(board)) {
 			for (int i = 0; i < this.board.length; i++) {
 				for (int j = 0; j < this.board[i].length; j++) {
-					if(!unickNumberInRowCol(board,i,j) || !BoardHasAllNumbers()) {
+					if(!unickNumberInRowCol(board,i,j)) {
 						return false;
 					}
 				}
@@ -95,7 +97,7 @@ public class Board {
 	}
 
 	//check if each square has all the number 1-9
-	private boolean BoardHasAllNumbers() {
+	private boolean BoardHasAllNumbers(Board board) {
 		int[] squer1 = new int[9];
 		int[] squer2 = new int[9];
 		int[] squer3 = new int[9];
@@ -109,58 +111,58 @@ public class Board {
 
 		for (int i=0;i<3;i++) {
 			for (int j = 0; j < 3; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer1[number-1]++;
 			}
 		}
 		for (int i=0;i<3;i++) {
 			for (int j = 3; j < 6; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer2[number-1]++;
 			}
 		}
 		for (int i=0;i<3;i++) {
 			for (int j = 6; j < 9; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer3[number-1]++;
 			}
 		}
 		for (int i=3;i<6;i++) {
 			for (int j = 0; j < 3; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer4[number-1]++;			}
 		}
 		for (int i=3;i<6;i++) {
 			for (int j = 3; j < 6; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer5[number-1]++;			}
 		}
 		for (int i=3;i<6;i++) {
 			for (int j = 6; j < 9; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer6[number-1]++;			}
 		}
 		for (int i=6;i<9;i++) {
 			for (int j = 0; j < 3; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer7[number-1]++;			}
 		}
 		for (int i=6;i<9;i++) {
 			for (int j = 3; j < 6; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer8[number-1]++;			}
 		}
 		for (int i=6;i<9;i++) {
 			for (int j = 6; j < 9; j++) {
-				number=this.board[i][j];
+				number=board.getBaord(i, j);
 				if (number>0)
 					squer9[number-1]++;			}
 		}
@@ -198,52 +200,52 @@ public class Board {
 	}
 
 	//return 2 digit, first digit 1:row;2:column, second digit  number of row/col, and 0 if cant find anything
-	public int findIfMissingOneDigitInRowCol () {
+	public int findIfMissingOneDigitInRowCol (Board board) {
 		int[] digitInRow = new int[9];
 		int[] digitInCol = new int[9];
 
-		for (int i=0;i<this.board.length;i++) {
-			if (this.board[i][0]!=0)
+		for (int i=0;i<9;i++) {
+			if (board.getBaord(i, 0) != 0)
 				digitInCol[0]++;
-			if (this.board[i][1]!=0)
+			if (board.getBaord(i, 1) != 0)
 				digitInCol[1]++;
-			if (this.board[i][2]!=0)
+			if (board.getBaord(i, 2) != 0)
 				digitInCol[2]++;
-			if (this.board[i][3]!=0)
+			if (board.getBaord(i, 3) != 0)
 				digitInCol[3]++;
-			if (this.board[i][4]!=0)
+			if (board.getBaord(i, 4) != 0)
 				digitInCol[4]++;
-			if (this.board[i][5]!=0)
+			if (board.getBaord(i, 5) != 0)
 				digitInCol[5]++;
-			if (this.board[i][6]!=0)
+			if (board.getBaord(i, 6) != 0)
 				digitInCol[6]++;
-			if (this.board[i][7]!=0)
+			if (board.getBaord(i, 7) != 0)
 				digitInCol[7]++;
-			if (this.board[i][8]!=0)
+			if (board.getBaord(i, 8) != 0)
 				digitInCol[8]++;
 		}
 		for (int k=0;k<9;k++)
 			if (digitInCol[k]==8)
 				return 2*10+k;
 
-		for (int j=0;j<this.board.length;j++) {
-			if (this.board[0][j]!=0)
+		for (int j=0;j<9;j++) {
+			if (board.getBaord(0, j) != 0)
 				digitInRow[0]++;
-			if (this.board[1][j]!=0)
+			if (board.getBaord(1, j) != 0)
 				digitInRow[1]++;
-			if (this.board[2][j]!=0)
+			if (board.getBaord(2, j) != 0)
 				digitInRow[2]++;
-			if (this.board[3][j]!=0)
+			if (board.getBaord(3, j) != 0)
 				digitInRow[3]++;
-			if (this.board[4][j]!=0)
+			if (board.getBaord(4, j) != 0)
 				digitInRow[4]++;
-			if (this.board[5][j]!=0)
+			if (board.getBaord(5, j) != 0)
 				digitInRow[5]++;
-			if (this.board[6][j]!=0)
+			if (board.getBaord(6, j) != 0)
 				digitInRow[6]++;
-			if (this.board[7][j]!=0)
+			if (board.getBaord(7, j) != 0)
 				digitInRow[7]++;
-			if (this.board[8][j]!=0)
+			if (board.getBaord(8, j) != 0)
 				digitInRow[8]++;
 		}
 		for (int k=0;k<9;k++)
@@ -253,14 +255,14 @@ public class Board {
 	}
 
 	//fill the missing number in a row/column
-	public void fillMisingDigit (int i) {
+	public Board fillMisingDigit (Board board, int i) {
 		int[] arrayCounter = new int[9];
 		int numberMissing=0;
 		int row=0,col=0;
 		if (i/10==1) {
 			row=i%10;
 			for (int j = 0; j < 9; j++) {
-				int number = this.getBaord(row, j);
+				int number = board.getBaord(row, j);
 				if (number>0)
 					arrayCounter[number-1]++;
 			}
@@ -269,8 +271,8 @@ public class Board {
 					numberMissing = j+1;
 			}
 			for (int j = 0; j < 9; j++) {
-				if (this.board[row][j]==0) {
-					this.board[row][j]=numberMissing;
+				if (board.getBaord(row, j)==0) {
+					board.setBaord(row, j, numberMissing);
 					break;
 				}
 			}
@@ -278,7 +280,7 @@ public class Board {
 		else {
 			col=i%10;
 			for (int j = 0; j < 9; j++) {
-				int number = this.board[j][col];
+				int number = board.getBaord(j, col);
 				if (number>0)
 					arrayCounter[number-1]++;
 			}
@@ -287,19 +289,19 @@ public class Board {
 					numberMissing = j+1;
 			}
 			for (int j = 0; j < this.board[row].length; j++) {
-				if (this.board[j][col]==0) {
-					this.board[j][col]=numberMissing;
+				if (board.getBaord(j, col)==0) {
+					board.setBaord(j, col, numberMissing);
 					break;
 				}
 			}
 
 		}
-		if (i/10!=2 && i/10!=1)
-			System.out.println("wrong inpit");
+
+		return board;
 	}
 
 	//if not missing return 0, if missing digit: return number of square [1-9]
-	public int findIfMissingOneDigitInsquare () {
+	public int findIfMissingOneDigitInsquare (Board board) {
 		int[] squareCountr = new int[9];
 		for (int i =0; i<9;i++) {
 			for (int j =0; j <9; j++) {
@@ -334,7 +336,7 @@ public class Board {
 	}
 
 	// fill the missing number in a square
-	public void fillMisingDigitSquare (int number) {
+	public Board fillMisingDigitSquare (Board board, int number) {
 		int row=0,col=0;
 		switch (number) {
 		case 2:
@@ -370,42 +372,43 @@ public class Board {
 		int m=0,l=0;//index of empty number
 		for (int i =row; i<row+3;i++) {
 			for(int j=col;j<col+3;j++) {
-				if (this.board[i][j]==0) {
+				if (board.getBaord(i, j)==0) {
 					m=i;
 					l=j;
 				}
-				int temp=this.board[i][j];
+				int temp=board.getBaord(i, j);
 				if (temp>0)
 					arrCounter[temp-1]++;
 			}
 		}
 		for (int i = 0; i < arrCounter.length; i++) {
 			if (arrCounter[i]==0) {
-				this.board[m][l]=i+1;
+				board.setBaord(m, l, i+1);
 				break;
 			}
 		}
+		return board;
 	}
 
 	//Try to place numbers in the correct position
-	public void tryPutNewNumberInside (int i, int j) {
+	public Board tryPutNewNumberInside (Board board, int i, int j) {
 		int[]  row = new int[9];
 		int[]  col = new int[9];
 		int[]  square = new int[9];
 		int temp=0;
 		for (int k = 0; k < 9; k++) {
-			temp = this.board[i][k];
+			temp = board.getBaord(i, k);
 			if (temp>0)
 				row[temp-1]++;
 		}
 		for (int k = 0; k < 9; k++) {
-			temp = this.board[k][j];
+			temp = board.getBaord(k, j);
 			if (temp>0)
 				col[temp-1]++;
 		}
 		for (int m=(i/3)*3; m<(i/3)*3+3;m++) {
 			for (int l=(j/3)*3; l<(j/3)*3+3;l++) {
-				temp = this.board[m][l];
+				temp = board.getBaord(m, l);
 				if (temp>0)
 					square[temp-1]++;			}
 		}
@@ -417,7 +420,9 @@ public class Board {
 				number = k+1;
 		}
 		if (count==8)
-			this.board[i][j]=number;
+			board.setBaord(i, j, number);
+
+		return board;
 	}
 
 	public boolean hasProblem(Board board) {
@@ -425,15 +430,15 @@ public class Board {
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9;j++) {
 				if(!unickNumberInRowCol(board,i,j)) {
-					board.printBoard();
+					board.printBoard(board);
 					System.out.println("problem 1 accured, in pisition: "+i+", "+j);
 					return true;
-					}
+				}
 			}
 		}
 
 		//find 2 identical numbers in square
-		
+
 		for (int i = 1; i<9; i+=3) {
 			for(int j =1; j <9; j+=3) {
 				int[] numbers = {0,0,0,0,0,0,0,0,0,0};
